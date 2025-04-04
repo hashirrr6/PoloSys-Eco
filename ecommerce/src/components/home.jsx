@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBackwardStep, faForwardStep } from "@fortawesome/free-solid-svg-icons";
 
-import {faBackwardStep,faForwardStep} from "@fortawesome/free-solid-svg-icons"
-
-
-const ITEMS_PER_PAGE = 8; 
+const ITEMS_PER_PAGE = 8; // Number of items per page
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -55,6 +53,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center">
+      {/* Search Bar */}
       <motion.div
         className="relative flex items-center w-96 mt-6"
         initial={{ y: -20, opacity: 0 }}
@@ -69,15 +68,15 @@ const Home = () => {
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            setCurrentPage(1); 
+            setCurrentPage(1); // Reset to first page when searching
           }}
         />
         <i className="fa-solid fa-magnifying-glass absolute left-3 text-gray-500 text-xl"></i>
       </motion.div>
 
-      
+      {/* Product Grid */}
       <motion.div
-        key={currentPage} 
+        key={currentPage}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6 place-items-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -88,39 +87,44 @@ const Home = () => {
         ))}
       </motion.div>
 
-   
+      {/* Pagination */}
       <div className="flex justify-center items-center space-x-4 mt-6 mb-6">
-      
-       
-{currentPage > 1 && (
-  <button 
-    onClick={prevPage} 
-    className="px-4 py-2 rounded-md bg-red-400 text-white hover:bg-red-600"
-  >
-    <FontAwesomeIcon icon={faBackwardStep} />
-  </button>
-)}
+        {currentPage > 1 && (
+          <button onClick={prevPage} className="px-4 py-2 rounded-md bg-red-400 text-white hover:bg-red-600">
+            <FontAwesomeIcon icon={faBackwardStep} />
+          </button>
+        )}
 
+        <span className="text-lg font-semibold">{currentPage} / {totalPages}</span>
 
-<span className="text-lg font-semibold">{currentPage} / {totalPages}</span>
-
-{currentPage < totalPages && (
-  <button 
-    onClick={nextPage} 
-    className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-400"
-  >
-    <FontAwesomeIcon icon={faForwardStep} />
-  </button>
-)}
-
+        {currentPage < totalPages && (
+          <button onClick={nextPage} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-400">
+            <FontAwesomeIcon icon={faForwardStep} />
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
+// Product Card Component
 const ProductCard = ({ product }) => {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { margin: "-100px 0px" });
+
+  // Add to Cart Function
+  const addToCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const isInCart = cart.some((item) => item.id === product.id);
+
+    if (!isInCart) {
+      const updatedCart = [...cart, product];
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      alert("Product added to cart!");
+    } else {
+      alert("Product is already in cart.");
+    }
+  };
 
   return (
     <motion.div
@@ -159,16 +163,14 @@ const ProductCard = ({ product }) => {
             <i className="fa-solid fa-star mr-1"></i>
             {product.rating}
           </p>
-
-          <motion.button
-            className="mt-3 px-4 py-2 bg-red-400 text-white rounded-md w-full"
-            whileHover={{ backgroundColor: "#14532d" }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-          >
-            Add to Cart
-          </motion.button>
         </Link>
+
+        <button
+          onClick={addToCart}
+          className="mt-3 px-4 py-2 bg-red-400 text-white rounded-md w-full hover:bg-red-600 transition"
+        >
+          Add to Cart
+        </button>
       </motion.div>
     </motion.div>
   );
