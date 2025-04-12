@@ -1,209 +1,191 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import {
+  removeFromCart,
+  updateQuantity,
+  selectCartItems,
+  selectCartTotal,
+} from "../features/cartSlice";
 
-const Cart = ({ onUpdateCart }) => {
+const Cart = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([]);
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
+  const subtotal = useSelector(selectCartTotal);
   const [shippingMethod, setShippingMethod] = useState("pickup");
 
-  // Load cart from localStorage
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    
-    // Initialize quantities if not present
-    const itemsWithQuantity = storedCart.map(item => ({
-      ...item,
-      quantity: item.quantity || 1
-    }));
-    
-    setCartItems(itemsWithQuantity);
-  }, []);
+  const handleQuantityChange = (id, quantity) => {
+    if (quantity < 1) return;
+    dispatch(updateQuantity({ id, quantity }));
+  };
 
-  // Remove item from cart
-  function removeFromCart(productId) {
-    const updatedCart = cartItems.filter((item) => item.id !== productId);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    
-    if (onUpdateCart) onUpdateCart(updatedCart);
-  }
+  const handleRemoveItem = (id) => {
+    dispatch(removeFromCart(id));
+  };
 
-  // Update quantity
-  function updateQuantity(productId, newQuantity) {
-    if (newQuantity < 1) return;
-    
-    const updatedCart = cartItems.map(item => 
-      item.id === productId ? {...item, quantity: newQuantity} : item
-    );
-    
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    if (onUpdateCart) onUpdateCart(updatedCart);
-  }
-
-  // Calculate subtotal
-  const subtotal = cartItems.reduce((acc, item) => 
-    acc + (item.price * (item.quantity || 1)), 0
-  );
-
-  // Shipping cost
-  const shippingCost = shippingMethod === "pickup" ? 0 : 9.90;
-  
-  // Total cost
-  const totalCost = subtotal + shippingCost;
+  const shippingCost = shippingMethod === "pickup" ? 0 : 9.9;
+  const total = subtotal + shippingCost;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 ">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">My Cart</h1>
-        <button 
-          onClick={() => navigate("/")} 
-          className="flex items-center text-gray-500 hover:text-gray-700"
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 text-red-500">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+      <div className="flex justify-center">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center text-red-500 sm:text-center">My Cart</h1>
+        </div>
+        <button
+          onClick={() => navigate("/")}
+          className="hover:text-red-600 text-sm sm:text-base"
         >
-          ← Continue shopping
+          ← Continue Shopping
         </button>
       </div>
 
       {cartItems.length === 0 ? (
-        <motion.div 
-          className="text-center py-12 text-gray-500"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          Your cart is empty. Start shopping to add items to your cart.
-        </motion.div>
+        <div className="text-center py-20 text-xl">
+          🛒 Your cart is empty.
+        </div>
       ) : (
         <>
-          <div className="grid grid-cols-12 gap-4 py-4 border-b text-sm text-gray-500 uppercase">
-            <div className="col-span-6">PRODUCT</div>
-            <div className="col-span-2 text-right">PRICE</div>
-            <div className="col-span-2 text-center">QTY</div>
-            <div className="col-span-2 text-right">TOTAL</div>
+          {/* Header */}
+          <div className="hidden md:grid md:grid-cols-12 gap-4 py-3 border-b text-sm uppercase">
+            <div className="col-span-6">Product</div>
+            <div className="col-span-2 text-right">Price</div>
+            <div className="col-span-2 text-center">Qty</div>
+            <div className="col-span-2 text-right">Total</div>
           </div>
 
+          {/* Cart Items */}
           {cartItems.map((item) => (
-            <motion.div 
-              key={item.id} 
-              className="grid grid-cols-12 gap-4 py-6 border-b"
+            <motion.div
+              key={item.id}
+              className="grid grid-cols-1 md:grid-cols-12 gap-4 py-6 border-b"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-      <Link to={`/card/${item.id}`} className="col-span-6 flex gap-4 hover:p-2 rounded-lg transition">
-               <div className="col-span-6 flex gap-4">
-                <img src={item.thumbnail} alt={item.title} className="w-24 h-24 object-cover bg-gray-100 rounded-lg" />
+              {/* Product Info */}
+              <Link
+                to={`/card/${item.id}`}
+                className="col-span-6 flex gap-4 items-start sm:items-center"
+              >
+                <img
+                  src={item.thumbnail}
+                  alt={item.title}
+                  className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-gray-100 rounded"
+                />
                 <div>
-                  <h3 className="font-medium">{item.title}</h3>
-                  <p className="text-gray-500 text-sm mt-1">#{item.id}</p>
-                  <p className="text-gray-500 text-sm mt-1">
-                    Brand: {item.brand}
-                  </p>
+                  <h3 className="font-medium text-base sm:text-lg">{item.title}</h3>
+                  <p className="text-sm">Brand: {item.brand}</p>
                 </div>
-              </div>
               </Link>
-              
-              <div className="col-span-2 flex flex-col text-gray-600 text-right">
-                <p className="font-medium mt-auto">${item.price.toFixed(2)}</p>
-                {item.discountPercentage && (
-                  <p className="text-sm text-green-600">-{item.discountPercentage}% off</p>
-                )}
+
+              {/* Price */}
+              <div className="md:col-span-2 flex justify-between md:justify-end items-center">
+                <p className="font-medium text-sm sm:text-base md:text-right w-full md:w-auto">
+                  ${item.price.toFixed(2)}
+                </p>
               </div>
-              
-              <div className="col-span-2 flex justify-center items-center">
-                <div className="flex items-center gap-2 border rounded-lg px-2 py-1">
-                  <button 
-                    onClick={() => updateQuantity(item.id, (item.quantity || 1) - 1)}
-                    className="text-red-400 hover:text-red-700"
+
+              {/* Quantity Controls */}
+              <div className="md:col-span-2 flex justify-center items-center">
+                <div className="flex items-center gap-2 border px-3 py-1 rounded">
+                  <button
+                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                    className="hover:text-red-600"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
-                  <span className="mx-2">{item.quantity || 1}</span>
-                  <button 
-                    onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}
-                    className="text-red-400 hover:text-red-700"
+                  <span className="min-w-[24px] text-center">{item.quantity}</span>
+                  <button
+                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                    className="hover:text-red-600"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
                 </div>
               </div>
-              
-              <div className="col-span-2 flex justify-end items-center gap-4">
-                <span className="font-medium">${((item.price * (item.quantity || 1))).toFixed(2)}</span>
-                <button 
-                  onClick={() => removeFromCart(item.id)} 
-                  className="text-gray-400 hover:text-red-500"
+
+              {/* Total + Remove Button */}
+              <div className="md:col-span-2 flex justify-between md:justify-end items-center gap-4">
+                <span className="font-medium text-sm sm:text-base text-right w-full md:w-auto">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </span>
+                <button
+                  onClick={() => handleRemoveItem(item.id)}
+                  className="hover:text-red-600"
                 >
                   <FontAwesomeIcon icon={faTimes} />
                 </button>
               </div>
             </motion.div>
           ))}
-   <div className="tot border rounded-xl p-4 m-4">
 
-          <div className="mt-8 p-4  rounded-lg">
-            <h3 className="font-medium mb-4">Choose shipping mode:</h3>
-            
-            <div className="flex flex-col gap-">
-              <label className="flex items-center gap-2">
-                <input 
-                  type="radio" 
-                  name="shipping" 
-                  checked={shippingMethod === "pickup"} 
-                  onChange={() => setShippingMethod("pickup")}
-                  className="accent-red-500"
-                />
-                <span className="flex-1">Store pickup (In 20 min)</span>
-                <span className="font-medium">FREE</span>
+          {/* Shipping & Summary */}
+          <div className="mt-10 p-4 border rounded-lg space-y-4 text-sm sm:text-base">
+            <h3 className="font-semibold mb-2">Choose Shipping Option</h3>
+            <div className="space-y-2">
+              <label className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="shipping"
+                    checked={shippingMethod === "pickup"}
+                    onChange={() => setShippingMethod("pickup")}
+                  />
+                  Store Pickup (Ready in 20 mins)
+                </div>
+                <span className="font-medium">Free</span>
               </label>
-              
-              <label className="flex items-center gap-2">
-                <input 
-                  type="radio" 
-                  name="shipping" 
-                  checked={shippingMethod === "delivery"} 
-                  onChange={() => setShippingMethod("delivery")}
-                  className="accent-red-500"
-                />
-                <span className="flex-1">Delivery at home (Under 2-4 day)</span>
+
+              <label className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="shipping"
+                    checked={shippingMethod === "delivery"}
+                    onChange={() => setShippingMethod("delivery")}
+                  />
+                  Home Delivery (2–4 Days)
+                </div>
                 <span className="font-medium">$9.90</span>
               </label>
-              
+
               {shippingMethod === "delivery" && (
-                <p className="text-sm text-gray-800 ml-6">At 45 Glenridge Ave, Brooklyn, NY 11230</p>
+                <p className="text-sm mt-2 pl-6">
+                  Delivery Address: 45 Glenridge Ave, Brooklyn, NY
+                </p>
               )}
             </div>
-          </div>
 
-          <div className="mt-6 flex flex-col items-end gap-2 text-sm text-gray-500 ">
-            <div className="w-1/3 flex justify-between">
-              <span>SUBTOTAL</span>
-              <span className="font-medium">${subtotal.toFixed(2)}</span>
+            <div className="border-t pt-4 space-y-2">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Shipping</span>
+                <span>{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</span>
+              </div>
+              <div className="flex justify-between font-semibold text-base">
+                <span>Total</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
             </div>
-            <div className="w-1/3 flex justify-between border-b pb-2">
-              <span>SHIPPING</span>
-              <span className="font-medium">{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</span>
-            </div>
-            <div className="w-1/3 flex justify-between">
-              <span>TOTAL</span>
-              <span className="font-medium">${totalCost.toFixed(2)}</span>
-            </div>
-          </div>
 
-          <div className="mt-6 flex justify-end ">
-            <motion.button
-              onClick={() => alert("Proceeding to checkout...")}
-              className="bg-red-400 text-white px-6 py-3 rounded hover:bg-red-700"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Checkout
-              <span className="ml-4">${totalCost.toFixed(2)}</span>
-            </motion.button>
-          </div>
+            <div className="text-right pt-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => alert("Proceeding to checkout...")}
+                className="bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600 w-full sm:w-auto"
+              >
+                Checkout <span className="ml-4">${total.toFixed(2)}</span>
+              </motion.button>
+            </div>
           </div>
         </>
       )}
