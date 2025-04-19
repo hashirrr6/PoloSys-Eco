@@ -51,7 +51,7 @@ export default function UserProfile() {
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
-          <div className="w-full md:w-64 space-y-1">
+          <div className="w-full md:w-64 sm:w-20 space-y-1">
             <div className={`flex items-center p-3 cursor-pointer ${activeSection === 'profile'
               ? 'border-l-4 border-red-500 bg-red-200 text-red-500'
               : 'hover:border-l-4 hover:border-red-500 hover:bg-red-100 hover:text-red-500'

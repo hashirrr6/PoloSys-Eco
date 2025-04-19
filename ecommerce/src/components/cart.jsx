@@ -31,11 +31,10 @@ const Cart = () => {
   const total = subtotal + shippingCost;
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6 text-red-500">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-      <div className="flex justify-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center text-red-500 sm:text-center">My Cart</h1>
-        </div>
+    <div className="max-w-6xl mx-auto p-3 sm:p-6 text-red-500">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+        <h1 className="text-2xl sm:text-4xl font-bold text-center text-red-500">My Cart</h1>
         <button
           onClick={() => navigate("/")}
           className="hover:text-red-600 text-sm sm:text-base hover:underline"
@@ -44,14 +43,15 @@ const Cart = () => {
         </button>
       </div>
 
+      {/* Empty Cart */}
       {cartItems.length === 0 ? (
-        <div className="text-center py-20 text-xl">
+        <div className="text-center py-20 text-base sm:text-xl">
           🛒 Your cart is empty.
         </div>
       ) : (
         <>
-          {/* Header */}
-          <div className="hidden md:grid md:grid-cols-12 gap-4 py-3 border-b text-sm uppercase">
+          {/* Desktop Header */}
+          <div className="hidden md:grid md:grid-cols-12 gap-4 py-3 border-b text-xs sm:text-sm uppercase">
             <div className="col-span-6">Product</div>
             <div className="col-span-2 text-right">Price</div>
             <div className="col-span-2 text-center">Qty</div>
@@ -62,7 +62,7 @@ const Cart = () => {
           {cartItems.map((item) => (
             <motion.div
               key={item.id}
-              className="grid grid-cols-1 md:grid-cols-12 gap-4 py-6 border-b"
+              className="grid grid-cols-1 md:grid-cols-12 gap-4 py-6 border-b text-sm sm:text-base"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
@@ -70,7 +70,7 @@ const Cart = () => {
               {/* Product Info */}
               <Link
                 to={`/card/${item.id}`}
-                className="col-span-6 flex gap-4 items-start sm:items-center"
+                className="col-span-6 flex gap-3 items-start sm:items-center"
               >
                 <img
                   src={item.thumbnail}
@@ -78,40 +78,40 @@ const Cart = () => {
                   className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-gray-100 rounded"
                 />
                 <div>
-                  <h3 className="font-medium text-base sm:text-lg">{item.title}</h3>
-                  <p className="text-sm">Brand: {item.brand}</p>
+                  <h3 className="font-medium text-sm sm:text-base">{item.title}</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">Brand: {item.brand}</p>
                 </div>
               </Link>
 
               {/* Price */}
               <div className="md:col-span-2 flex justify-between md:justify-end items-center">
-                <p className="font-medium text-sm sm:text-base md:text-right w-full md:w-auto">
+                <p className="font-medium w-full md:w-auto text-sm sm:text-base text-right">
                   ${item.price.toFixed(2)}
                 </p>
               </div>
 
-              {/* Quantity Controls */}
+              {/* Quantity */}
               <div className="md:col-span-2 flex justify-center items-center">
                 <div className="flex items-center gap-2 border px-3 py-1 rounded">
                   <button
                     onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                    className="hover:text-red-600"
+                    className="hover:text-red-600 text-xs sm:text-base"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
                   <span className="min-w-[24px] text-center">{item.quantity}</span>
                   <button
                     onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                    className="hover:text-red-600"
+                    className="hover:text-red-600 text-xs sm:text-base"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
                 </div>
               </div>
 
-              {/* Total + Remove Button */}
-              <div className="md:col-span-2 flex justify-between md:justify-end items-center gap-4">
-                <span className="font-medium text-sm sm:text-base text-right w-full md:w-auto">
+              {/* Total + Remove */}
+              <div className="md:col-span-2 flex justify-between md:justify-end items-center gap-3">
+                <span className="font-medium w-full md:w-auto text-sm sm:text-base text-right">
                   ${(item.price * item.quantity).toFixed(2)}
                 </span>
                 <button
@@ -124,11 +124,11 @@ const Cart = () => {
             </motion.div>
           ))}
 
-          {/* Shipping & Summary */}
+          {/* Summary Section */}
           <div className="mt-10 p-4 border rounded-lg space-y-4 text-sm sm:text-base">
-            <h3 className="font-semibold mb-2">Choose Shipping Option</h3>
+            <h3 className="font-semibold text-base sm:text-lg">Choose Shipping Option</h3>
             <div className="space-y-2">
-              <label className="flex items-center justify-between">
+              <label className="flex items-center justify-between text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
                   <input
                     type="radio"
@@ -136,12 +136,12 @@ const Cart = () => {
                     checked={shippingMethod === "pickup"}
                     onChange={() => setShippingMethod("pickup")}
                   />
-                  Store Pickup (Ready in 20 mins)
+                  Store Pickup (20 mins)
                 </div>
                 <span className="font-medium">Free</span>
               </label>
 
-              <label className="flex items-center justify-between">
+              <label className="flex items-center justify-between text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
                   <input
                     type="radio"
@@ -155,13 +155,13 @@ const Cart = () => {
               </label>
 
               {shippingMethod === "delivery" && (
-                <p className="text-sm mt-2 pl-6">
+                <p className="text-xs sm:text-sm pl-6 text-gray-600">
                   Delivery Address: 45 Glenridge Ave, Brooklyn, NY
                 </p>
               )}
             </div>
 
-            <div className="border-t pt-4 space-y-2">
+            <div className="border-t pt-4 space-y-1 text-xs sm:text-sm">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
@@ -170,20 +170,20 @@ const Cart = () => {
                 <span>Shipping</span>
                 <span>{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</span>
               </div>
-              <div className="flex justify-between font-semibold text-base">
+              <div className="flex justify-between font-semibold text-sm sm:text-base">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
             </div>
 
-            <div className="text-right pt-4">
+            <div className="pt-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => alert("Proceeding to checkout...")}
-                className="bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600 w-full sm:w-auto"
+                className="bg-red-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded hover:bg-red-600 w-full sm:w-auto text-sm sm:text-base"
               >
-                Checkout <span className="ml-4">${total.toFixed(2)}</span>
+                Checkout <span className="ml-3">${total.toFixed(2)}</span>
               </motion.button>
             </div>
           </div>

@@ -1,5 +1,4 @@
 // src/pages/Card.jsx
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,14 +6,13 @@ import { addToCart, removeFromCart } from "../features/cartSlice";
 import { toggleWishlist } from "../features/wishSlice";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faTrash, faStar,faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
-import Review  from "./review";
+import { faHeart, faTrash, faStar, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import Review from "./review";
 import {
   updateQuantity,
   selectCartItems,
   selectCartTotal,
 } from "../features/cartSlice";
-
 
 const Card = () => {
   const { id } = useParams();
@@ -39,7 +37,8 @@ const Card = () => {
     if (!product) return;
     dispatch(addToCart({ ...product, quantity: 1 }));
   };
-const handleQuantityChange = (id, quantity) => {
+
+  const handleQuantityChange = (id, quantity) => {
     if (quantity < 1) return;
     dispatch(updateQuantity({ id, quantity }));
   };
@@ -49,131 +48,173 @@ const handleQuantityChange = (id, quantity) => {
   };
 
   if (!product) {
-    return <div className="text-center text-xl">Loading...</div>;
+    return <div className="flex justify-center items-center h-screen text-xl">Loading...</div>;
   }
 
-  return (<>
-    <div className="flex items-center justify-center">
-      <motion.div
-        className="product grid grid-cols-2 gap-8 items-center p-6"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-      >
+  return (
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
         <motion.div
-          className="image border p-4 rounded-lg shadow-lg"
-          whileHover={{
-            scale: 0.95,
-            boxShadow: "0px 10px 20px rgba(255, 0, 0, 0.3)",
-          }}
+          className="product grid grid-cols-1 lg:grid-cols-2 gap-8 items-center p-4 md:p-6"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          <img
-            src={product.thumbnail}
-            alt={product.title}
-            className="w-[600px] h-[600px] object-cover rounded-lg"
+          {/* Product Image */}
+          <motion.div
+            className="image bg-white p-4 rounded-lg shadow-md flex justify-center"
+            whileHover={{
+              scale: 0.98,
+              boxShadow: "0px 10px 20px rgba(255, 0, 0, 0.2)",
+            }}
+          >
+            <img
+              src={product.thumbnail}
+              alt={product.title}
+              className="w-full max-w-md h-auto md:h-[500px] object-contain rounded-lg"
+            />
+          </motion.div>
+
+          {/* Product Details */}
+          <div className="details flex flex-col space-y-4 md:space-y-6">
+            <div className="title">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{product.title}</h2>
+              <h4 className="text-gray-500 text-lg mt-1">Brand: {product.brand}</h4>
+            </div>
+
+            {/* Price Section */}
+            <div className="price bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex flex-col">
+                <p className="text-sm text-gray-500 line-through mb-1">
+                  ${(product.price / (1 - product.discountPercentage / 100)).toFixed(2)}
+                </p>
+                <div className="flex items-center flex-wrap gap-2">
+                  <span className="text-2xl font-semibold text-gray-800">
+                    ${product.price}
+                  </span>
+                  <span className="bg-red-100 text-red-800 font-medium px-2 py-1 rounded text-xs md:text-sm">
+                    {product.discountPercentage}% OFF
+                  </span>
+                  <span className="text-gray-500 text-sm ml-auto">
+                    ({product.stock} in stock)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Rating */}
+            <div className="rating flex items-center gap-1">
+  {[...Array(5)].map((_, i) => {
+    const ratingValue = i + 1;
+    const isFilled = ratingValue <= Math.floor(product.rating);
+    const isHalf = !isFilled && (product.rating % 1 > 0.3) && (Math.ceil(product.rating) === ratingValue);
+    
+    return (
+      <div key={i} className="relative inline-block w-4 h-4">
+        <FontAwesomeIcon 
+          icon={faStar}
+          className="absolute text-gray-300"
+        />
+        {isFilled && (
+          <FontAwesomeIcon 
+            icon={faStar}
+            className="absolute text-yellow-500"
           />
-        </motion.div>
-
-        <div className="details flex flex-col space-y-4 justify-center items-center gap-8">
-          <div className="title flex flex-col items-center">
-            <h2 className="text-2xl font-bold">{product.title}</h2>
-            <h4 className="text-gray-500">Brand: {product.brand}</h4>
+        )}
+        {isHalf && (
+          <div className="absolute overflow-hidden" style={{ width: '50%' }}>
+            <FontAwesomeIcon 
+              icon={faStar}
+              className="text-yellow-500"
+            />
           </div>
+        )}
+      </div>
+    );
+  })}
+  <span className="text-gray-700 font-medium ml-1">({product.rating})</span>
+</div>
 
-          <div className="price flex ">
-          <h2 className="text-2xl font-semibold text-gray-800 m-4">
-          <p className="text-sm text-gray-500 line-through ">
-     ${(product.price / (1 - product.discountPercentage / 100)).toFixed(2)}
-  </p>
-    Price: ${product.price}
-    <p className="bg-red-200 text-red-800 font-medium px-2 py-1 inline-block rounded text-sm">
-    {product.discountPercentage}% OFF
-  </p>
-  </h2>
-  
-  
-          </div>
-          <span className="text-gray-400 text-sm ml-2">
-              ({product.stock} in stock)
-            </span>
+            {/* Description */}
+            <div className="description  p-4 rounded-lg shadow-sm">
+              <p className="text-gray-700">{product.description}</p>
+            </div>
 
-          <div className="rating flex text-yellow-500 items-center gap-1">
-            <FontAwesomeIcon icon={faStar} />
-            <h5 className="text-red-500">{product.rating}</h5>
-          </div>
-
-          <div className="description flex justify-center">
-            <p className="text-gray-700 text-center">{product.description}</p>
-          </div>
-          {isInCart && (
-  <div className="md:col-span-2 flex justify-center items-center">
-    <div className="flex items-center gap-2 border px-3 py-1 rounded-full shadow-sm">
-      <button
-        onClick={() =>
-          handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity - 1)
-        }
-        className="hover:text-red-600 disabled:opacity-30"
-        disabled={cartItems.find((item) => item.id === product.id)?.quantity <= 1}
-      >
-        <FontAwesomeIcon icon={faMinus} />
-      </button>
-      <span className="min-w-[24px] text-center font-medium">
-        {cartItems.find((item) => item.id === product.id)?.quantity || 1}
-      </span>
-      <button
-        onClick={() =>
-          handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity + 1)
-        }
-        className="hover:text-green-600"
-      >
-        <FontAwesomeIcon icon={faPlus} />
-      </button>
-    </div>
-  </div>
-)}
-
-          <div className="flex gap-4">
-            {isInCart ? (
-              <>
-                <button
-                  onClick={() => navigate("/cart")}
-                  className="bg-red-500 px-4 py-2 text-white rounded hover:bg-red-700"
-                >
-                  Go to Cart
-                </button>
-                <button
-                  onClick={handleRemoveFromCart}
-                  className="bg-gray-800 px-4 py-2 text-white rounded hover:bg-black"
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Remove
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={handleAddToCart}
-                className="bg-red-400 px-4 py-2 text-white rounded hover:bg-red-700"
-              >
-                Add to Cart
-              </button>
+            {/* Quantity Controls (only shown if in cart) */}
+            {isInCart && (
+              <div className="flex justify-center items-center p-4 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 border px-4 py-2 rounded-full">
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity - 1)
+                    }
+                    className="hover:text-red-600 disabled:opacity-30 text-gray-700"
+                    disabled={cartItems.find((item) => item.id === product.id)?.quantity <= 1}
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </button>
+                  <span className="min-w-[24px] text-center font-medium text-gray-800">
+                    {cartItems.find((item) => item.id === product.id)?.quantity || 1}
+                  </span>
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity + 1)
+                    }
+                    className="hover:text-green-600 text-gray-700"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                </div>
+              </div>
             )}
 
-            <button
-              onClick={() => dispatch(toggleWishlist(product))}
-              className={`text-3xl border px-2 transition-all rounded ${
-                isWishlisted
-                  ? "text-red-700 border-red-700"
-                  : "text-red-100 bg-red-700 hover:bg-red-300"
-              }`}
-            >
-              <FontAwesomeIcon icon={faHeart} />
-            </button>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              {isInCart ? (
+                <>
+                  <button
+                    onClick={() => navigate("/cart")}
+                    className="flex-1 bg-red-500 px-4 py-3 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    Go to Cart
+                  </button>
+                  <button
+                    onClick={handleRemoveFromCart}
+                    className="flex-1 bg-gray-800 px-4 py-3 text-white rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                    <span>Remove</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-red-500 px-4 py-3 text-white rounded-lg hover:bg-red-600 transition-colors"
+                >
+                  Add to Cart
+                </button>
+              )}
+
+              <button
+                onClick={() => dispatch(toggleWishlist(product))}
+                className={`p-3 rounded-lg transition-all flex items-center justify-center ${
+                  isWishlisted
+                    ? "text-red-600 bg-red-50 border border-red-200"
+                    : "text-gray-400 bg-gray-50 border border-gray-200 hover:bg-red-50 hover:text-red-500"
+                }`}
+              >
+                <FontAwesomeIcon icon={faHeart} className="text-xl" />
+              </button>
+            </div>
           </div>
+        </motion.div>
+        
+        {/* Reviews Section */}
+        <div className="mt-12">
+          <Review />
         </div>
-      </motion.div>
-      
+      </div>
     </div>
-    <Review/>
-    </>
   );
 };
 
