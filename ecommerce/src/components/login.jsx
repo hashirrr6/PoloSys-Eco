@@ -4,6 +4,7 @@ import Logo from "../assets/logo.png"
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from 'react-toastify';
 
 import { motion, useAnimation } from "framer-motion";
 
@@ -20,7 +21,9 @@ const Navigate=useNavigate()
     e.preventDefault();
 
   if(email && password){
-  alert("Login Succesfully")
+  toast.success("Login Succesfully",{
+    autoClose:1000
+  })
   setEmail("Welcome") ;
   setShowPassword(true)
   setPassword("My World")
@@ -28,7 +31,7 @@ const Navigate=useNavigate()
     Navigate("/home")
   }, 2000);
 }else{
-  alert("Please Fill The Fields")
+  toast.error("Please Fill The Fields")
 }
 }
 

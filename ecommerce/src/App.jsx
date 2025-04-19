@@ -11,18 +11,23 @@ import Wishlist from "./components/whishlist";
 import Profile from "./components/profile"
 import Sign from "./components/sign"
 import { useLocation } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Component that handles routes + nav logic
+
 function AppContent() {
   const location = useLocation();
   const hideNavRoutes = ["/login","/signup" ];
   const hideFooter=["/login","/signup"];
   const shouldHideFooter=hideFooter.includes(location.pathname)
   const shouldHideNav = hideNavRoutes.includes(location.pathname);
+ 
 
   return (
     <>
-      {!shouldHideNav && <Nav />}
+      {!shouldHideNav && <Nav/>}
+     
+
       
       <Routes>
         <Route path="/" element={<Home />} />
@@ -36,7 +41,18 @@ function AppContent() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/signup" element={<Sign/>}/>
       </Routes>
-      {!shouldHideFooter && <Footer/>}    </>
+      {!shouldHideFooter && <Footer/>} 
+      <ToastContainer
+  position="top-center"
+  autoClose={3000}
+  hideProgressBar={false}
+  closeOnClick
+  pauseOnHover
+  draggable
+  theme="light"
+/>
+
+         </>
   );
 }
 

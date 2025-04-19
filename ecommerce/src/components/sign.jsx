@@ -3,6 +3,7 @@ import SignupImg from "../assets/signin.png"; // You might want to use a differe
 import Logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -23,18 +24,18 @@ const SignUp = () => {
 const validate=()=>{
   if(email&&password){
   if(password===confirmPassword){
-    alert("Succesfully Created")
+    toast.success("Succesfully Created")
     setTimeout(() => {
       Navigate("/login")
       
     }, 2000);
   }else{
-    alert("Password Miss match")
+    toast.error("Password Miss match")
     setPassword("");
     setConfirmPassword("");
   }
 }else {
-  alert("Please fill in all fields");
+  toast.error("Please fill in all fields");
 }
 }
 

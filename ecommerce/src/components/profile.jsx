@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { Bell, Star, List, Settings, Heart, LogOut, ShoppingCart } from 'lucide-react';
+import { Bell, Star, List, Settings, Heart, LogOut, ShoppingCart, UserRoundPen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Wishlist from './whishlist';
 import Cart from './cart';
 import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
 
 export default function UserProfile() {
   const [activeSection, setActiveSection] = useState('profile')
+  const [isEditing, setIsEditing] = useState(false)
 
   const [userData, setUserData] = useState({
     name: 'Sara',
@@ -27,13 +29,15 @@ export default function UserProfile() {
   const logoutt = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     if (confirmLogout) {
+      toast.success("LogGed Out")
       ;
       navigate("/login");
     }
   }
 
   const handleSave = () => {
-    console.log('Saving user data:', userData);
+  toast.success(" Saved Successfully ")
+
   };
 
   return (
@@ -49,28 +53,26 @@ export default function UserProfile() {
           {/* Sidebar */}
           <div className="w-full md:w-64 space-y-1">
             <div className={`flex items-center p-3 cursor-pointer ${activeSection === 'profile'
-                ? 'border-l-4 border-red-500 bg-red-200 text-red-500'
-                : 'hover:border-l-4 hover:border-red-500 hover:bg-red-100 hover:text-red-500'
+              ? 'border-l-4 border-red-500 bg-red-200 text-red-500'
+              : 'hover:border-l-4 hover:border-red-500 hover:bg-red-100 hover:text-red-500'
               }`}
               onClick={() => setActiveSection('profile')}>
               <Bell size={18} className="mr-3" />
               <span className=''>User info</span>
             </div>
 
-            <div className={`flex items-center p-3 cursor-pointer ${
-    activeSection === 'wishlist'
-      ? 'border-l-4 border-red-500 bg-red-200 text-red-500'
-      : 'hover:border-l-4 hover:border-red-500 hover:bg-red-100 hover:text-red-500'
-  }`} onClick={() => setActiveSection('wishlist')}>
+            <div className={`flex items-center p-3 cursor-pointer ${activeSection === 'wishlist'
+                ? 'border-l-4 border-red-500 bg-red-200 text-red-500'
+                : 'hover:border-l-4 hover:border-red-500 hover:bg-red-100 hover:text-red-500'
+              }`} onClick={() => setActiveSection('wishlist')}>
               <Heart size={18} className="mr-3 text-gray-400" />
               <span className="">Whishlist</span>
             </div>
 
-            <div  className={`flex items-center p-3 cursor-pointer ${
-    activeSection === 'cart'
-      ? 'border-l-4 border-red-500 bg-red-200 text-red-500'
-      : 'hover:border-l-4 hover:border-red-500 hover:bg-red-100 hover:text-red-500'
-  }`}
+            <div className={`flex items-center p-3 cursor-pointer ${activeSection === 'cart'
+                ? 'border-l-4 border-red-500 bg-red-200 text-red-500'
+                : 'hover:border-l-4 hover:border-red-500 hover:bg-red-100 hover:text-red-500'
+              }`}
               onClick={() => setActiveSection('cart')}>
               <ShoppingCart size={18} className="mr-3 text-gray-400" />
               <span className="">Cart</span>
@@ -99,13 +101,21 @@ export default function UserProfile() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.7 }}
-                >
+                >{!isEditing&&(
+                <div className="flex justify-end w-full ">
+                  <button
+                    onClick={() => setIsEditing(!isEditing)}>
+                    <UserRoundPen size={30} className="mr-3 text-red-800 hover:text-green-500 shadow " />
+                  </button>
+                </div>)}
+                  
+
                   <div className="flex flex-col md:flex-row items-center mb-8 gap-6">
                     <div className="relative">
-                      <div className="h-24 w-24 rounded-full overflow-hidden bg-orange-200">
+                      <div className="h-24 w-24 rounded-full overflow-hidden bg-red-200">
                         <img src="/api/placeholder/100/100" alt="Sara Tancredi" className="h-full w-full object-cover" />
                       </div>
-                      <div className="absolute bottom-0 right-0 bg-orange-500 rounded-full p-1">
+                      <div className="absolute bottom-0 right-0 bg-red-500 rounded-full p-1">
                         <Settings size={16} className="text-white" />
                       </div>
                     </div>
@@ -121,9 +131,12 @@ export default function UserProfile() {
                         type="text"
                         name="name"
                         value={userData.name}
+                        disabled={!isEditing}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                      />
+                        className={`w-full p-2 border rounded-md transition-shadow duration-300
+                          ${isEditing ? 'shadow-md ring-1 ring-red-300 focus:shadow-red-500/50 focus:ring-2 focus:ring-red-400' : 'bg-gray-100 cursor-not-allowed'}
+                        `}
+                                              />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
@@ -131,9 +144,12 @@ export default function UserProfile() {
                         type="text"
                         name="fullName"
                         value={userData.fullName}
+                        disabled={!isEditing}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                      />
+                        className={`w-full p-2 border rounded-md transition-shadow duration-300
+                          ${isEditing ? 'shadow-md ring-1 ring-red-300 focus:shadow-red-500/50 focus:ring-2 focus:ring-red-400' : 'bg-gray-100 cursor-not-allowed'}
+                        `}
+                                              />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
@@ -141,9 +157,12 @@ export default function UserProfile() {
                         type="email"
                         name="email"
                         value={userData.email}
+                        disabled={!isEditing}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                      />
+                        className={`w-full p-2 border rounded-md transition-shadow duration-300
+                          ${isEditing ? 'shadow-md ring-1 ring-red-300 focus:shadow-red-500/50 focus:ring-2 focus:ring-red-400' : 'bg-gray-100 cursor-not-allowed'}
+                        `}
+                                              />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
@@ -151,9 +170,12 @@ export default function UserProfile() {
                         type="text"
                         name="phone"
                         value={userData.phone}
+                        disabled={!isEditing}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                      />
+                        className={`w-full p-2 border rounded-md transition-shadow duration-300
+                          ${isEditing ? 'shadow-md ring-1 ring-red-300 focus:shadow-red-500/50 focus:ring-2 focus:ring-red-400' : 'bg-gray-100 cursor-not-allowed'}
+                        `}
+                                              />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
@@ -162,9 +184,12 @@ export default function UserProfile() {
                         name="location"
                         value={userData.location}
                         onChange={handleChange}
+                        disabled={!isEditing}
                         placeholder="e.g. New York, USA"
-                        className="w-full p-2 border rounded-md"
-                      />
+                        className={`w-full p-2 border rounded-md transition-shadow duration-300
+                          ${isEditing ? 'shadow-md ring-1 ring-red-300 focus:shadow-red-500/50 focus:ring-2 focus:ring-red-400' : 'bg-gray-100 cursor-not-allowed'}
+                        `}
+                                              />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
@@ -172,20 +197,29 @@ export default function UserProfile() {
                         type="text"
                         name="postalCode"
                         value={userData.postalCode}
+                        disabled={!isEditing}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                      />
+                        className={`w-full p-2 border rounded-md transition-shadow duration-300
+                          ${isEditing ? 'shadow-md ring-1 ring-red-300 focus:shadow-red-500/50 focus:ring-2 focus:ring-red-400' : 'bg-gray-100 cursor-not-allowed'}
+                        `}
+                                              />
                     </div>
                   </div>
-
-                  <div className="mt-8 flex justify-end">
-                    <button
-                      onClick={handleSave}
-                      className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-full"
-                    >
-                      Save Changes
-                    </button>
-                  </div>
+                  {isEditing && (
+                    <div className="mt-8 flex justify-end">
+                      <button
+                        onClick={()=>{
+                          handleSave()
+                          setIsEditing(false)
+                        }
+                        }
+                        
+                        className="bg-red-500 hover:bg-red-800 text-white py-2 px-6 rounded-full"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               </>
             )}

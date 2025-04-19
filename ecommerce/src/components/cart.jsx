@@ -38,7 +38,7 @@ const Cart = () => {
         </div>
         <button
           onClick={() => navigate("/")}
-          className="hover:text-red-600 text-sm sm:text-base"
+          className="hover:text-red-600 text-sm sm:text-base hover:underline"
         >
           ← Continue Shopping
         </button>

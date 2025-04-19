@@ -6,6 +6,7 @@ import { faBackwardStep, faForwardStep } from "@fortawesome/free-solid-svg-icons
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../features/cartSlice";
 import Filter from "./filter";
+import { toast } from "react-toastify";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -205,9 +206,9 @@ const ProductCard = ({ product }) => {
     const isInCart = cartItems.some((item) => item.id === product.id);
     if (!isInCart) {
       dispatch(addToCart({ ...product, quantity: 1 }));
-      alert(`${product.title} added to cart!`);
+      toast.success(`${product.title} added to cart!`);
     } else {
-      alert(`${product.title} is already in your cart.`);
+      toast.error(`${product.title} is already in your cart.`);
     }
   };
 

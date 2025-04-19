@@ -7,7 +7,14 @@ import { addToCart, removeFromCart } from "../features/cartSlice";
 import { toggleWishlist } from "../features/wishSlice";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faTrash, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faTrash, faStar,faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import Review  from "./review";
+import {
+  updateQuantity,
+  selectCartItems,
+  selectCartTotal,
+} from "../features/cartSlice";
+
 
 const Card = () => {
   const { id } = useParams();
@@ -32,7 +39,11 @@ const Card = () => {
     if (!product) return;
     dispatch(addToCart({ ...product, quantity: 1 }));
   };
-
+const handleQuantityChange = (id, quantity) => {
+    if (quantity < 1) return;
+    dispatch(updateQuantity({ id, quantity }));
+  };
+  
   const handleRemoveFromCart = () => {
     dispatch(removeFromCart(product.id));
   };
@@ -41,7 +52,7 @@ const Card = () => {
     return <div className="text-center text-xl">Loading...</div>;
   }
 
-  return (
+  return (<>
     <div className="flex items-center justify-center">
       <motion.div
         className="product grid grid-cols-2 gap-8 items-center p-6"
@@ -69,9 +80,22 @@ const Card = () => {
             <h4 className="text-gray-500">Brand: {product.brand}</h4>
           </div>
 
-          <div className="price">
-            <h2 className="text-2xl font-semibold">Price: ${product.price}</h2>
+          <div className="price flex ">
+          <h2 className="text-2xl font-semibold text-gray-800 m-4">
+          <p className="text-sm text-gray-500 line-through ">
+     ${(product.price / (1 - product.discountPercentage / 100)).toFixed(2)}
+  </p>
+    Price: ${product.price}
+    <p className="bg-red-200 text-red-800 font-medium px-2 py-1 inline-block rounded text-sm">
+    {product.discountPercentage}% OFF
+  </p>
+  </h2>
+  
+  
           </div>
+          <span className="text-gray-400 text-sm ml-2">
+              ({product.stock} in stock)
+            </span>
 
           <div className="rating flex text-yellow-500 items-center gap-1">
             <FontAwesomeIcon icon={faStar} />
@@ -81,6 +105,32 @@ const Card = () => {
           <div className="description flex justify-center">
             <p className="text-gray-700 text-center">{product.description}</p>
           </div>
+          {isInCart && (
+  <div className="md:col-span-2 flex justify-center items-center">
+    <div className="flex items-center gap-2 border px-3 py-1 rounded-full shadow-sm">
+      <button
+        onClick={() =>
+          handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity - 1)
+        }
+        className="hover:text-red-600 disabled:opacity-30"
+        disabled={cartItems.find((item) => item.id === product.id)?.quantity <= 1}
+      >
+        <FontAwesomeIcon icon={faMinus} />
+      </button>
+      <span className="min-w-[24px] text-center font-medium">
+        {cartItems.find((item) => item.id === product.id)?.quantity || 1}
+      </span>
+      <button
+        onClick={() =>
+          handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity + 1)
+        }
+        className="hover:text-green-600"
+      >
+        <FontAwesomeIcon icon={faPlus} />
+      </button>
+    </div>
+  </div>
+)}
 
           <div className="flex gap-4">
             {isInCart ? (
@@ -120,7 +170,10 @@ const Card = () => {
           </div>
         </div>
       </motion.div>
+      
     </div>
+    <Review/>
+    </>
   );
 };
 
