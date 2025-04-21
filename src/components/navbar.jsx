@@ -97,7 +97,7 @@ const Nav = () => {
                         </ul>
 
                         {/* Right Icons */}
-                        <div className="flex items-center space-x-4 md:space-x-8 text-red-700">
+                        <div className="flex items-center space-x-6 md:space-x-8 text-red-700">
                             {/* Cart Icon - Always visible */}
                             <motion.div
                                 className="relative"
@@ -123,24 +123,32 @@ const Nav = () => {
                                 </Link>
                             </motion.div>
 
-                            {/* Wishlist & Profile Icons - Hidden on mobile */}
-                            <div className="hidden md:flex space-x-6 items-center">
-                                <motion.div whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 300 }}>
-                                    <Link to="/wishlist" className="text-xl">
-                                        <FontAwesomeIcon icon={faHeart} />
-                                    </Link>
-                                </motion.div>
-                                <motion.div whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 300 }}>
-                                    <Link to="/profile" className="text-xl">
-                                        <FontAwesomeIcon icon={faUser} />
-                                    </Link>
-                                </motion.div>
-                            </div>
+                            {/* Wishlist Icon - Always visible on both mobile and desktop */}
+                            <motion.div 
+                                whileHover={{ scale: 1.2 }} 
+                                transition={{ type: "spring", stiffness: 300 }}
+                                className="flex" // Changed from hidden md:flex to always flex
+                            >
+                                <Link to="/wishlist" className="text-xl text-red-600">
+                                    <FontAwesomeIcon icon={faHeart} />
+                                </Link>
+                            </motion.div>
+
+                            {/* Profile Icon - Hidden on mobile */}
+                            <motion.div 
+                                whileHover={{ scale: 1.2 }} 
+                                transition={{ type: "spring", stiffness: 300 }}
+                                className="hidden md:flex"
+                            >
+                                <Link to="/profile" className="text-xl text-red-600">
+                                    <FontAwesomeIcon icon={faUser} />
+                                </Link>
+                            </motion.div>
 
                             {/* Mobile Menu Toggle */}
                             <motion.button
                                 onClick={() => setMenuOpen(!menuOpen)}
-                                className="md:hidden text-xl text-red-700 focus:outline-none p-1"
+                                className="md:hidden text-xl text-red-700 focus:outline-none p-1 text-red-600"
                                 whileTap={{ scale: 0.9 }}
                                 aria-label="Toggle menu"
                             >
@@ -172,16 +180,7 @@ const Nav = () => {
                                     </Link>
                                 ))}
                                 
-                                {/* Added wishlist and profile to mobile menu */}
-                                <Link
-                                    to="/wishlist"
-                                    onClick={() => setMenuOpen(false)}
-                                    className="flex items-center py-2 font-medium border-b border-red-100"
-                                >
-                                    <FontAwesomeIcon icon={faHeart} className="mr-3" />
-                                    <span>Wishlist</span>
-                                </Link>
-                                
+                                {/* Keep profile in mobile menu */}
                                 <Link
                                     to="/profile"
                                     onClick={() => setMenuOpen(false)}
