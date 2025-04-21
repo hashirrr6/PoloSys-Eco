@@ -19,6 +19,7 @@ const Card = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const dispatch = useDispatch();
+  const [quantity, setQuantity] = useState(1);
 
   const cartItems = useSelector((state) => state.cart.items);
   const wishlist = useSelector((state) => state.wishlist);
@@ -35,8 +36,9 @@ const Card = () => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    dispatch(addToCart({ ...product, quantity: 1 }));
+    dispatch(addToCart({ ...product, quantity }));
   };
+  
 
   const handleQuantityChange = (id, quantity) => {
     if (quantity < 1) return;
@@ -141,32 +143,29 @@ const Card = () => {
             </div>
 
             {/* Quantity Controls (only shown if in cart) */}
-            {isInCart && (
-              <div className="flex justify-center items-center p-4 rounded-lg shadow-sm">
-                <div className="flex items-center gap-3 border px-4 py-2 rounded-full">
-                  <button
-                    onClick={() =>
-                      handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity - 1)
-                    }
-                    className="hover:text-red-600 disabled:opacity-30 text-gray-700"
-                    disabled={cartItems.find((item) => item.id === product.id)?.quantity <= 1}
-                  >
-                    <FontAwesomeIcon icon={faMinus} />
-                  </button>
-                  <span className="min-w-[24px] text-center font-medium text-gray-800">
-                    {cartItems.find((item) => item.id === product.id)?.quantity || 1}
-                  </span>
-                  <button
-                    onClick={() =>
-                      handleQuantityChange(product.id, cartItems.find((item) => item.id === product.id)?.quantity + 1)
-                    }
-                    className="hover:text-green-600 text-gray-700"
-                  >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </button>
-                </div>
-              </div>
-            )}
+            {!isInCart && (
+  <div className="flex justify-center items-center p-4 rounded-lg shadow-sm">
+    <div className="flex items-center gap-3 border px-4 py-2 rounded-full">
+      <button
+        onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
+        className="hover:text-red-600 disabled:opacity-30 text-gray-700"
+        disabled={quantity <= 1}
+      >
+        <FontAwesomeIcon icon={faMinus} />
+      </button>
+      <span className="min-w-[24px] text-center font-medium text-gray-800">
+        {quantity}
+      </span>
+      <button
+        onClick={() => setQuantity((prev) => prev + 1)}
+        className="hover:text-green-600 text-gray-700"
+      >
+        <FontAwesomeIcon icon={faPlus} />
+      </button>
+    </div>
+  </div>
+)}
+
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
@@ -178,13 +177,7 @@ const Card = () => {
                   >
                     Go to Cart
                   </button>
-                  <button
-                    onClick={handleRemoveFromCart}
-                    className="flex-1 bg-gray-800 px-4 py-3 text-white rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                    <span>Remove</span>
-                  </button>
+                  
                 </>
               ) : (
                 <button

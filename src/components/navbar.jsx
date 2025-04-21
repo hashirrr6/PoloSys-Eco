@@ -1,5 +1,5 @@
 import "../App.css";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/loggg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faHeart, faUser, faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
@@ -62,14 +62,14 @@ const Nav = () => {
     return (
         <>
             <div className="sticky top-0 bg-white z-50 shadow-md">
-                <div className="main flex justify-center px-4 md:px-8 w-full">
-                    <div className="w-full max-w-7xl flex justify-between items-center py-3 md:py-4">
+                <div className="main flex justify-center  md:px-8 w-full">
+                    <div className="w-full max-w-7xl flex justify-between items-center py-2 md:py-4">
                         {/* Logo */}
                         <Link to="/">
                             <motion.img
                                 src={Logo}
                                 alt="Logo"
-                                className="w-14 h-12 md:w-20 md:h-20 filter invert sepia saturate-[4000%] hue-rotate-[-20deg] brightness-[0.6]"
+                                className="w-18 h-18 md:w-26 md:h-24 "
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
                             />
