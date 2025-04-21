@@ -61,7 +61,7 @@ const Nav = () => {
 
     return (
         <>
-            <div className="sticky top-0 z-50 shadow-md">
+            <div className="sticky top-0 bg-white z-50 shadow-md ">
                 <div className="main flex justify-center  md:px-8 w-full">
                     <div className="w-full max-w-7xl flex justify-between items-center py-2 md:py-4">
                         {/* Logo */}
