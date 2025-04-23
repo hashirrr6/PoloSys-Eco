@@ -35,19 +35,22 @@ const Cart = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
         <h1 className="text-2xl sm:text-4xl font-bold text-center text-red-500">My Cart</h1>
-        <button
-          onClick={() => navigate("/")}
-          className="hover:text-red-600 md:block text-sm sm:text-base hover:underline"
-        >
-          ← Continue Shopping
-        </button>
+       
       </div>
 
       {/* Empty Cart */}
       {cartItems.length === 0 ? (
-        <div className="text-center py-20 text-base sm:text-xl">
-          🛒 Your cart is empty.
-        </div>
+       <div className="flex flex-col items-center justify-center min-h-[200px] py-20 text-center">
+       <div className="text-base sm:text-xl mb-4">
+         🛒 Your cart is empty.
+       </div>
+       <button
+         onClick={() => navigate("/")}
+         className="hover:text-red-600 text-sm sm:text-base hover:underline"
+       >
+         ← Continue Shopping
+       </button>
+     </div>
       ) : (
         <>
           {/* Desktop Header */}

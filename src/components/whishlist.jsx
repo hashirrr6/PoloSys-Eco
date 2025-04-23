@@ -23,12 +23,7 @@ const Wishlist = () => {
        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
         <h1 className="text-3xl sm:text-4xl font-bold text-center text-red-500 sm:text-center ">My Wishlist</h1>
        
-        <button
-          onClick={() => navigate("/")}
-          className="hover:text-red-600 text-sm sm:text-base hover:underline"
-        >
-          ← Continue Shopping
-        </button>
+       
       </div>
 
       {wishlist.length === 0 ? (
