@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import {
   removeFromCart,
   updateQuantity,
@@ -31,13 +31,13 @@ const Cart = () => {
   const total = subtotal + shippingCost;
 
   return (
-    <div className="max-w-6xl mx-auto p-3 sm:p-6 text-red-500">
+    <div className="max-w-6xl mx-auto p-3 sm:p-6 text-red-500 mb-14">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
         <h1 className="text-2xl sm:text-4xl font-bold text-center text-red-500">My Cart</h1>
         <button
           onClick={() => navigate("/")}
-          className="hover:text-red-600 text-sm sm:text-base hover:underline"
+          className="hover:text-red-600 hidden md:block text-sm sm:text-base hover:underline"
         >
           ← Continue Shopping
         </button>
@@ -62,7 +62,7 @@ const Cart = () => {
           {cartItems.map((item) => (
             <motion.div
               key={item.id}
-              className="grid grid-cols-1 md:grid-cols-12 gap-4 py-6 border-b text-sm sm:text-base"
+              className="grid grid-cols-1 md:grid-cols-12 gap-4 py-6  shadow text-sm sm:text-base p-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
@@ -116,9 +116,9 @@ const Cart = () => {
                 </span>
                 <button
                   onClick={() => handleRemoveItem(item.id)}
-                  className="hover:text-red-600"
+                  className="hover:text-red-600 "
                 >
-                  <FontAwesomeIcon icon={faTimes} />
+                  <FontAwesomeIcon icon={faTrash} />
                 </button>
               </div>
             </motion.div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBackwardStep, faForwardStep, faSearch, faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
+import { faBackwardStep,faBell,faLocationDot, faForwardStep, faSearch, faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../features/cartSlice";
 import Filter from "./filter";
@@ -113,30 +113,58 @@ const Home = () => {
     </div>
   );
 
-  return (
+  return (<>
+  <div className="md:hidden px-4 py-2">
+  <div className="flex items-center justify-between">
+    {/* Left: Location */}
+    <div className="flex items-center gap-2">
+      <FontAwesomeIcon icon={faLocationDot} className="text-gray-600" />
+      <div className="flex flex-col leading-tight">
+        <h5 className="text-xs font-medium">Location</h5>
+        <p className="text-xs hover:underline">Kozhikkode, Kerala</p>
+      </div>
+    </div>
+
+    {/* Right: Bell Icon */}
+    <button className="text-gray-600 hover:text-red-600">
+      <FontAwesomeIcon icon={faBell} className="text-lg" />
+    </button>
+  </div>
+</div>
+
     <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 max-w-7xl">
       {/* Header Section - Improved responsiveness */}
     
 
       {/* Search Bar - More responsive */}
       <motion.div
-        className="relative flex items-center w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto mb-4 sm:mb-5 md:mb-6"
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <FontAwesomeIcon icon={faSearch} className="absolute left-3 md:left-4 text-gray-500 text-sm md:text-base" />
-        <input
-          type="text"
-          placeholder="Search products..."
-          className="border border-gray-300 rounded-full py-2 md:py-3 pl-8 md:pl-10 pr-3 md:pr-4 w-full outline-none shadow-md transition-all duration-300 focus:border-red-500 focus:ring-2 focus:ring-red-300 text-sm md:text-base text-gray-700"
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setCurrentPage(1);
-          }}
-        />
-      </motion.div>
+  className="relative flex justify-center w-full mx-auto mb-4 sm:mb-5 md:mb-6"
+  initial={{ y: -20, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ duration: 0.5, delay: 0.1 }}
+>
+  {/* Input wrapper with icon inside */}
+  <div className="relative w-[80%] sm:w-full max-w-xs sm:max-w-sm md:max-w-md">
+    {/* Icon absolutely positioned inside input box */}
+    <FontAwesomeIcon
+      icon={faSearch}
+      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm md:text-base pointer-events-none"
+    />
+
+    {/* Input with left padding for icon */}
+    <input
+      type="text"
+      placeholder="Search products..."
+      className="w-full border border-gray-300 rounded-full py-2 md:py-3 pl-10 pr-3 md:pr-4 outline-none shadow-md transition-all duration-300 focus:border-red-500 focus:ring-2 focus:ring-red-300 text-sm md:text-base text-gray-700"
+      value={searchQuery}
+      onChange={(e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+      }}
+    />
+  </div>
+</motion.div>
+
 
      {/* Filter and Sort Controls - Redesigned to be inline with responsive widths */}
 <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
@@ -253,7 +281,7 @@ const Home = () => {
 
       {/* Pagination - More compact for mobile */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 md:gap-3 mt-6 md:mt-8 mb-6 md:mb-8">
+        <div className="flex justify-center items-center gap-2 md:gap-3 mt-6 md:mt-8 mb-5 md:mb-8">
           <motion.button 
             onClick={prevPage} 
             disabled={currentPage === 1}
@@ -282,6 +310,7 @@ const Home = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

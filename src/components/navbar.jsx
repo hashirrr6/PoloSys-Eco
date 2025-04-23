@@ -1,7 +1,7 @@
 import "../App.css";
 import Logo from "../assets/loggg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faHeart, faUser, faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping,faHeart, faUser, faBars, faXmark,  } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -61,7 +61,8 @@ const Nav = () => {
 
     return (
         <>
-            <div className="sticky top-0 bg-white z-50 shadow-md ">
+        <div>
+            <div className="sticky top-0 bg-white z-50 shadow-md hidden md:block sm:block">
                 <div className="main flex justify-center  md:px-8 w-full">
                     <div className="w-full max-w-7xl flex justify-between items-center py-2 md:py-4">
                         {/* Logo */}
@@ -197,6 +198,7 @@ const Nav = () => {
                 <div>
                     <hr className="border-t-2 border-red-700" />
                 </div>
+            </div>
             </div>
         </>
     );
