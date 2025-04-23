@@ -67,45 +67,27 @@ const Footer = () => {
 
       <div className="md:hidden mt-5" />
       {/* Mobile Footer - Fixed Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white shadow-inner border-t border-gray-200">
-        <div className="flex justify-between items-center px-6 py-2">
-          <a
-            href="/"
-            className={`flex flex-col items-center text-xs ${
-              isActive("/") ? "bg-red-200 text-red-800" : "text-red-600"
-            } px-2 py-1 rounded`}
-          >
-            <FaHome className="text-lg" />
-            Home
-          </a>
-          <a
-            href="/wishlist"
-            className={`flex flex-col items-center text-xs ${
-              isActive("/wishlist") ? "bg-red-200 text-red-800" : "text-red-600"
-            } px-2 py-1 rounded`}
-          >
-            <FaHeart className="text-lg" />
-            Wishlist
-          </a>
-          <a
-            href="/cart"
-            className={`flex flex-col items-center text-xs ${
-              isActive("/cart") ? "bg-red-200 text-red-800" : "text-red-600"
-            } px-2 py-1 rounded`}
-          >
-            <FaShoppingCart className="text-lg" />
-            Cart
-          </a>
-          <a
-            href="/account"
-            className={`flex flex-col items-center text-xs ${
-              isActive("/account") ? "bg-red-200 text-red-800" : "text-red-600"
-            } px-2 py-1 rounded`}
-          >
-            <FaUser className="text-lg" />
-            Profile
-          </a>
-        </div>
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white  shadow-inner border-t border-gray-200">
+  <div className="flex justify-between items-center px-0 py-0">
+    {[
+      { href: "/", label: "Home", icon: <FaHome />, match: "/" },
+      { href: "/wishlist", label: "Wishlist", icon: <FaHeart />, match: "/wishlist" },
+      { href: "/cart", label: "Cart", icon: <FaShoppingCart />, match: "/cart" },
+      { href: "/account", label: "Profile", icon: <FaUser />, match: "/account" },
+    ].map(({ href, label, icon, match }) => (
+      <a
+        key={href}
+        href={href}
+        className={`flex-1 flex flex-col items-center justify-center py-2 ${
+          isActive(match) ? "bg-red-200 text-red-800 rounded" : "text-red-600"
+        }`}
+      >
+        <div className="text-lg">{icon}</div>
+        <span className="text-xs">{label}</span>
+      </a>
+    ))}
+  </div>
+
       </div>
     </>
   );
